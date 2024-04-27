@@ -7,3 +7,4 @@ jobs:
     environment: DEV
     steps:
       - run: echo "${{ secrets.MY_SECRET }}"
+      - run: echo "Deploying document preprocessor..."
