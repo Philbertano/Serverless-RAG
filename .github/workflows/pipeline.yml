@@ -6,4 +6,4 @@ jobs:
     runs-on: ubuntu-latest
     environment: DEV
     steps:
-      - run: echo "${{ secrets.AWS_ACCESS_KEY_ID }}"
+      - run: echo "${{ secrets.MY_SECRET }}"
