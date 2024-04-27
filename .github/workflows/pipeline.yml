@@ -1,13 +1,9 @@
-name: CI/CD pipeline
-run-name: ${{ github.actor }} is learning GitHub Actions
+name: Deployment
+run-name: Deploy document preprocessor
 on: [push]
 jobs:
-  check-bats-version:
+  deploy:
     runs-on: ubuntu-latest
+    environment: DEV
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm install -g bats
-      - run: bats -v
+      - run: echo "${{ secrets.AWS_ACCESS_KEY_ID }}"
