@@ -2,7 +2,7 @@
 FROM public.ecr.aws/lambda/python:3.12
 
 # Copy lambda_layer.zip
-COPY lambda_layer.zip
+COPY lambda_layer.zip ${LAMBDA_TASK_ROOT}
 
 # Extract layer contents (if necessary)
 RUN unzip lambda_layer.zip
