@@ -1,2 +1,2 @@
-boto3
-vectordb
+boto3>=1.17.78
+vectordb>=1.0.0
