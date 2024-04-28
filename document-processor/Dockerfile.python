@@ -1,6 +1,9 @@
 # Use the official AWS Lambda Python runtime base image
 FROM public.ecr.aws/lambda/python:3.12
 
+# Install unzip
+RUN apt-get update && apt-get install -y unzip
+
 # Copy lambda_layer.zip
 COPY lambda_layer.zip ${LAMBDA_TASK_ROOT}
 
