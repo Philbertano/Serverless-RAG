@@ -46,7 +46,7 @@ Resources:
                   - Name: prefix
                     Value: documents/
     Metadata:
-      DockerTag: public.ecr.aws/lambda/python
+      DockerTag: public.ecr.aws/lambda/python:3.12
       DockerContext: ./document-processor
       Dockerfile: Dockerfile.python
 
