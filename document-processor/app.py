@@ -40,12 +40,7 @@ def download_object(bucket_name, object_key, download_path):
         print('Error:', e)
 
 async def create_directory():
-    tmp_path = os.path.join('/tmp', 'documents')
-    try:
-        os.makedirs(tmp_path, exist_ok=True)
-        print(f'Directory created at: {tmp_path}')
-    except OSError as e:
-        print('Error creating directory:', e)
+    print("Hello async")
 
 
 def lambda_handler(event, context):
