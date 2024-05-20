@@ -2,6 +2,7 @@ import os
 import boto3
 import tempfile
 import json
+import asyncio
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import CharacterTextSplitter
