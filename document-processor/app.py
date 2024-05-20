@@ -59,12 +59,19 @@ def lambda_handler(event, context):
     
     try:
         loader = PyPDFLoader(file_path)
-        #docs = asyncio.run(loader.load_and_split(splitter))
+        #docs = asyncio.run(loader.load_and_split(text_splitter))
     except Exception as e:
         print('Error loading documents:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
-    print("Hello world")
+    dir = f's3://{lance_db_src}/embeddings'
+    create_table = False
+
+    try:
+        db = LanceDB(dir)
+    except Exception as e:
+        print('Error connecting to LanceDB:', e)
+        return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
     
     return {
         'statusCode': 200,
