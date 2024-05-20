@@ -57,3 +57,8 @@ async def lambda_handler(event, context):
     #(bucket_name, object_key, file_path)
 
     print("Hello world")
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Async Lambda!')
+    }
