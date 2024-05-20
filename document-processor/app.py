@@ -21,10 +21,29 @@ text_splitter = CharacterTextSplitter(
     is_separator_regex=False,
 )
 
-embeddings = BedrockEmbeddings(region=aws_region, model='amazon.titan-embed-text-v1')
+embeddings = BedrockEmbeddings()
 
 s3_client = boto3.client('s3', region_name=aws_region)
 
+
+def download_object(bucket_name, object_key, download_path):
+    try:
+        # Get the object from the Amazon S3 bucket
+        response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
+        # Stream the object to a file
+        with open(download_path, 'wb') as f:
+            f.write(response['Body'].read())
+        print(f'File downloaded to {download_path}')
+    except ClientError as e:
+        print('Error:', e)
+
+async def create_directory():
+    tmp_path = os.path.join('/tmp', 'documents')
+    try:
+        os.makedirs(tmp_path, exist_ok=True)
+        print(f'Directory created at: {tmp_path}')
+    except OSError as e:
+        print('Error creating directory:', e)
 
 def handler(event, context):
     print("Hello world")
