@@ -53,10 +53,9 @@ def lambda_handler(event, context):
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
     
-    print(event)
-    #await create_directory()
+    await create_directory()
 
-    #(bucket_name, object_key, file_path)
+    download_object(bucket_name, object_key, file_path)
 
     print("Hello world")
     
