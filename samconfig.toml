@@ -7,4 +7,3 @@ region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
-image_repositories = ["DocumentProcessorFunction=894644507764.dkr.ecr.us-east-1.amazonaws.com/serverlessragd0266bbc/documentprocessorfunctionb22e788brepo"]
