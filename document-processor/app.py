@@ -2,7 +2,7 @@ import os
 import boto3
 import tempfile
 import json
-#import asyncio
+import asyncio
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import CharacterTextSplitter
@@ -39,6 +39,13 @@ def download_object(bucket_name, object_key, download_path):
     except ClientError as e:
         print('Error:', e)
 
+async def create_directory():
+    tmp_path = os.path.join('/tmp', 'documents')
+    try:
+        os.makedirs(tmp_path, exist_ok=True)
+        print(f'Directory created at: {tmp_path}')
+    except OSError as e:
+        print('Error creating directory:', e)
 
 def lambda_handler(event, context):
     # The S3 event contains details about the uploaded object
@@ -46,7 +53,7 @@ def lambda_handler(event, context):
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
     
-    #.run(tester())
+    asyncio.run(create_directory())
 
     #download_object(bucket_name, object_key, file_path)
 
