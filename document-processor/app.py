@@ -39,8 +39,8 @@ def download_object(bucket_name, object_key, download_path):
     except ClientError as e:
         print('Error:', e)
 
-async def create_directory():
-    print("Hello async")
+async def tester():
+    print("hello async")
 
 
 def lambda_handler(event, context):
@@ -49,7 +49,7 @@ def lambda_handler(event, context):
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
     
-    asyncio.run(create_directory())
+    asyncio.run(tester())
 
     #download_object(bucket_name, object_key, file_path)
 
