@@ -46,11 +46,11 @@ async def create_directory():
         print('Error creating directory:', e)
 
 
-async def lambda_handler(event, context):
+def lambda_handler(event, context):
     # The S3 event contains details about the uploaded object
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
-    #file_path = f'/tmp/{object_key}'
+    file_path = f'/tmp/{object_key}'
 
     #await create_directory()
 
@@ -60,5 +60,5 @@ async def lambda_handler(event, context):
     
     return {
         'statusCode': 200,
-        'body': json.dumps('Hello from Async Lambda!')
+        'body': json.dumps('Hello from Lambda!')
     }
