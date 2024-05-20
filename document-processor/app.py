@@ -1,6 +1,7 @@
 import os
 import boto3
 import tempfile
+import json
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import CharacterTextSplitter
@@ -51,7 +52,8 @@ def lambda_handler(event, context):
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
-
+    
+    print(event)
     #await create_directory()
 
     #(bucket_name, object_key, file_path)
