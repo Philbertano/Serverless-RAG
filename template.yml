@@ -24,7 +24,7 @@ Resources:
         - Statement:
             - Effect: Allow
               Action: 
-                - 'bedrock:InvokeModel'
+                - 'bedrock:*'
               Resource: '*'
             - Effect: Allow
               Action: 
