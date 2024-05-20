@@ -56,7 +56,7 @@ def lambda_handler(event, context):
     
     asyncio.run(create_directory())
 
-    download_object(bucket_name, object_key, file_path)
+    #download_object(bucket_name, object_key, file_path)
 
     print("Hello world")
     
