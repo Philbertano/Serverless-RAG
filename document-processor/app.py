@@ -90,7 +90,9 @@ def lambda_handler(event, context):
             return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
     docs = [{'pageContent': doc.pageContent, 'metadata': {}} for doc in docs]
-        
+    
+    asyncio.run(LanceDB.from_documents(docs, embeddings, table=table))
+    
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
