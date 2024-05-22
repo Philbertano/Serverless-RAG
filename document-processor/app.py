@@ -67,8 +67,6 @@ def lambda_handler(event, context):
     dir = f's3://{lance_db_src}/embeddings'
     create_table = False
 
-    print(dir)
-    
     try:
         db = LanceDB(dir)
     except Exception as e:
@@ -80,7 +78,18 @@ def lambda_handler(event, context):
     except Exception as e:
         create_table = True
         print('Table not found with error', e)
-        
+    
+    if create_table:
+        print(f'{lance_db_table} table not found. Creating it.')
+        try:
+            table = db.create_table(lance_db_table, [
+                {'vector': [0] * 1536, 'text': 'sample'}
+            ])
+        except Exception as e:
+            print(f'Error connecting to LanceDB table {lance_db_table} :', e)
+            return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
+
+    docs = [{'pageContent': doc.pageContent, 'metadata': {}} for doc in docs]
         
     return {
         'statusCode': 200,
