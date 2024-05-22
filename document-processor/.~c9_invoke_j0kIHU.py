@@ -59,7 +59,7 @@ def lambda_handler(event, context):
     
     try:
         loader = PyPDFLoader(file_path)
-        docs = asyncio.run(loader.load_and_split(text_splitter))
+        docs = loader.load_and_split(text_splitter)
     except Exception as e:
         print('Error loading documents:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
