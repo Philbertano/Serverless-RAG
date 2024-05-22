@@ -10,25 +10,27 @@ from langchain_community.vectorstores import LanceDB
 from botocore.exceptions import ClientError
 
 
-
-async def create_directory():
-    tmp_path = os.path.join('/tmp', 'documents')
-    try:
-        os.makedirs(tmp_path, exist_ok=True)
-        print(f'Directory created at: {tmp_path}')
-    except OSError as e:
-        print('Error creating directory:', e)
-
-async def tester():
-    print("hello async")
-
 def lambda_handler():
     # The S3 event contains details about the uploaded object
     
-    asyncio.run(tester())
+    region_name ="us-east-1"
+    credentials_profile_name = "default"
+    model_id = "amazon.titan-embed-text-v1"
+
+    embeddings = BedrockEmbeddings(
+        credentials_profile_name=credentials_profile_name,
+        region_name=region_name,
+        model_id=model_id
+        )
+    
+    #db = LanceDB(connection="/documents/bedrock-docs-2012.10.20.pdf". embedding=embeddings)
     #asyncio.run(create_directory())
-
-
+    vector_store = LanceDB(
+        uri="documents/embeddings",
+        region="us-west-1",
+        embedding=embeddings,
+        table_name='langchain_test'
+        )
     
     
     return {

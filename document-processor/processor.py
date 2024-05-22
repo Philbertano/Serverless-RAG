@@ -1,5 +1,6 @@
 import os
 import boto3
+import asyncio
 from botocore.exceptions import ClientError
 from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain.text_splitter import CharacterTextSplitter

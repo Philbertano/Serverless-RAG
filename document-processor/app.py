@@ -23,7 +23,14 @@ text_splitter = CharacterTextSplitter(
     is_separator_regex=False,
 )
 
-embeddings = BedrockEmbeddings()
+credentials_profile_name = "default"
+model_id = "amazon.titan-embed-text-v1"
+
+embeddings = BedrockEmbeddings(
+    credentials_profile_name=credentials_profile_name,
+    region_name=aws_region,
+    model_id=model_id
+    )
 
 s3_client = boto3.client('s3', region_name=aws_region)
 
@@ -68,7 +75,12 @@ def lambda_handler(event, context):
     create_table = False
 
     try:
-        db = LanceDB(dir)
+        db = LanceDB(
+            uri=dir,
+            region=aws_region,
+            embedding=embeddings,
+            table_name=lance_db_table
+            )
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
