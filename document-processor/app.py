@@ -68,7 +68,7 @@ def lambda_handler(event, context):
     create_table = False
 
     try:
-        db = LanceDB(dir)
+        db = LanceDB.connect(dir)
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
