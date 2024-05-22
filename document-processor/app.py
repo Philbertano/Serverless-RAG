@@ -15,6 +15,10 @@ lance_db_src = os.environ['s3BucketName']
 lance_db_table = os.environ['lanceDbTable']
 aws_region = os.environ['region']
 
+s3_client = boto3.client('s3', region_name=aws_region)
+
+bedrock_client = boto3.client(service_name='bedrock-runtime', region_name=aws_region)
+
 text_splitter = CharacterTextSplitter(
     separator="\n\n",
     chunk_size=1000,
@@ -23,16 +27,12 @@ text_splitter = CharacterTextSplitter(
     is_separator_regex=False,
 )
 
-credentials_profile_name = "default"
 model_id = "amazon.titan-embed-text-v1"
 
 embeddings = BedrockEmbeddings(
-    credentials_profile_name=credentials_profile_name,
-    region_name=aws_region,
+    client=bebedrock_client,
     model_id=model_id
     )
-
-s3_client = boto3.client('s3', region_name=aws_region)
 
 
 def download_object(bucket_name, object_key, download_path):
