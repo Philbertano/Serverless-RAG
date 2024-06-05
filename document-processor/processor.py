@@ -14,10 +14,16 @@ aws_region = os.environ['region']
 
 splitter = CharacterTextSplitter(chunkSize=1000, chunkOverlap=200)
 
-embeddings = BedrockEmbeddings(region=aws_region, model='amazon.titan-embed-text-v1')
-
 s3_client = boto3.client('s3', region_name=aws_region)
 
+bedrock_client = boto3.client(service_name='bedrock-runtime', region_name=aws_region)
+
+model_id = "amazon.titan-embed-text-v1"
+
+embeddings = BedrockEmbeddings(
+    client=bedrock_client,
+    model_id=model_id
+    )
 
 def download_object(bucket_name, object_key, download_path):
     try:
