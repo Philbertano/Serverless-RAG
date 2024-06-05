@@ -10,13 +10,12 @@ from langchain_community.vectorstores import LanceDB
 from botocore.exceptions import ClientError
 
 
-
 # Env vars
 lance_db_src = os.environ['s3BucketName']
 lance_db_table = os.environ['lanceDbTable']
 aws_region = os.environ['region']
 
-splitter = CharacterTextSplitter(chunkSize=1000, chunkOverlap=200)
+text_splitter = CharacterTextSplitter(chunkSize=1000, chunkOverlap=200)
 
 s3_client = boto3.client('s3', region_name=aws_region)
 
@@ -61,8 +60,8 @@ async def lambda_handler(event, context):
     download_object(bucket_name, object_key, file_path)
 
     try:
-        loader = PDFLoader(file_path, splitPages=False)
-        docs = await loader.load_and_split(splitter)
+        loader = PyPDFLoader(file_path)
+        docs = await loader.load_and_split(text_splitter)
     except Exception as e:
         print('Error loading documents:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
@@ -71,7 +70,6 @@ async def lambda_handler(event, context):
     create_table = False
 
     try:
-        #db = LanceDB(dir)
         db = LanceDB(uri=dir, region=aws_region, embedding=embeddings, table_name=lance_db_table)
     except Exception as e:
         print('Error connecting to LanceDB:', e)
