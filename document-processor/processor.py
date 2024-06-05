@@ -61,7 +61,8 @@ async def lambda_handler(event, context):
     create_table = False
 
     try:
-        db = LanceDB(dir)
+        #db = LanceDB(dir)
+        db = LanceDB(uri=dir, region=aws_region, embedding=embeddings, table_name=lance_db_table)
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
