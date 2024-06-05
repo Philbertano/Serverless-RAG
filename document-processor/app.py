@@ -2,7 +2,6 @@ import os
 import boto3
 import tempfile
 import json
-import asyncio
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import CharacterTextSplitter
@@ -46,7 +45,7 @@ def download_object(bucket_name, object_key, download_path):
         print('Error:', e)
 
 
-async def create_directory():
+def create_directory():
     tmp_path = os.path.join('/tmp', 'documents')
     try:
         os.makedirs(tmp_path, exist_ok=True)
@@ -55,19 +54,19 @@ async def create_directory():
         print('Error creating directory:', e)
 
 
-async def lambda_handler(event, context):
+def lambda_handler(event, context):
     # The S3 event contains details about the uploaded object
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
 
-    await create_directory()
+    create_directory()
 
     download_object(bucket_name, object_key, file_path)
 
     try:
         loader = PyPDFLoader(file_path)
-        docs = await loader.load_and_split(text_splitter)
+        docs = loader.load_and_split(text_splitter)
     except Exception as e:
         print('Error loading documents:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
@@ -99,6 +98,6 @@ async def lambda_handler(event, context):
 
     docs = [{'pageContent': doc.pageContent, 'metadata': {}} for doc in docs]
 
-    await LanceDB.from_documents(docs, embeddings, table=table)
+    LanceDB.from_documents(docs, embeddings, table=table)
 
     return {'statusCode': 201, 'body': json.dumps({'message': 'OK'})}
