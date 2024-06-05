@@ -1,11 +1,15 @@
 import os
 import boto3
+import tempfile
+import json
 import asyncio
+from langchain_community.embeddings.bedrock import BedrockEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_community.vectorstores import LanceDB
 from botocore.exceptions import ClientError
-from langchain.embeddings.bedrock import BedrockEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders.fs.pdf import PDFLoader
-from langchain.vectorstores.lancedb import LanceDB
+
+
 
 # Env vars
 lance_db_src = os.environ['s3BucketName']
