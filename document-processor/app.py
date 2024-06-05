@@ -15,7 +15,13 @@ lance_db_src = os.environ['s3BucketName']
 lance_db_table = os.environ['lanceDbTable']
 aws_region = os.environ['region']
 
-text_splitter = CharacterTextSplitter(chunkSize=1000, chunkOverlap=200)
+text_splitter = CharacterTextSplitter(
+    separator="\n\n",
+    chunk_size=1000,
+    chunk_overlap=200,
+    length_function=len,
+    is_separator_regex=False,
+)
 
 s3_client = boto3.client('s3', region_name=aws_region)
 
