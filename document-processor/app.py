@@ -81,6 +81,6 @@ def lambda_handler(event, context):
 
     docs = [{'pageContent': doc.page_content, 'metadata': doc.metadata} for doc in docs]
 
-    LanceDB.from_documents(docs, embeddings, table=table)
+    LanceDB.from_documents(docs, embeddings)
 
     return {'statusCode': 201, 'body': json.dumps({'message': 'OK'})}
