@@ -72,15 +72,14 @@ def lambda_handler(event, context):
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
     dir = f's3://{lance_db_src}/embeddings'
-    create_table = False
-
+    
     try:
         db = LanceDB(uri=dir, region=aws_region, embedding=embeddings, table_name=lance_db_table)
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
-    docs = [{'pageContent': doc.pageContent, 'metadata': {}} for doc in docs]
+    docs = [{'pageContent': doc.page_content, 'metadata': doc.metadata} for doc in docs]
 
     LanceDB.from_documents(docs, embeddings, table=table)
 
