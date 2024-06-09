@@ -56,6 +56,6 @@ def lambda_handler(event, context):
     response = rag_chain.invoke("List all the bedrock models available?")
 
     # Print response
-    print(response)
+    print("Response: " + response)
 
     return {'statusCode': 201, 'body': json.dumps({'message': 'OK'})}
