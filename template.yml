@@ -49,6 +49,80 @@ Resources:
       DockerContext: ./document-processor
       Dockerfile: Dockerfile.python
 
+  QueryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: python3.11
+      Timeout: 300
+      MemorySize: 512
+      Environment:
+        Variables:
+          s3BucketName: !Ref DocumentBucket
+          region: !Ref AWS::Region
+          lanceDbTable: doc_table
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: 
+                - 'bedrock:*'
+              Resource: '*'
+            - Effect: Allow
+              Action: 
+                - 's3:GetObject'
+                - 's3:PutObject'
+                - 's3:List*'
+              Resource: 
+                - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}/*
+                - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}
+
+  ApiGatewayRestApi:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      Name: 'QueryFunctionApi'
+      StageName: 'prod'
+
+  ApiGatewayResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+      PathPart: 'query'
+      RestApiId:
+        Ref: 'ApiGatewayRestApi'
+
+  ApiGatewayMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: 'NONE'
+      HttpMethod: 'POST'
+      ResourceId:
+        Ref: 'ApiGatewayResource'
+      RestApiId:
+        Ref: 'ApiGatewayRestApi'
+      Integration:
+        IntegrationHttpMethod: 'POST'
+        Type: 'AWS_PROXY'
+        Uri: 
+          Fn::Sub: 
+            - 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations'
+            - {
+                Region: !Ref AWS::Region,
+                LambdaArn: !GetAtt QueryFunction.Arn
+              }
+      MethodResponses:
+        - StatusCode: 200
+
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt QueryFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/*/*'
+
 Outputs:
   DocumentProcessorFunction:
     Description: "Lambda Function ARN"
@@ -65,3 +139,9 @@ Outputs:
   DeploymentRegion:
     Description: "Region where this stack is deployed"
     Value: !Sub ${AWS::Region}
+  QueryFunction:
+    Description: "Query Function ARN"
+    Value: !GetAtt QueryFunction.Arn
+  QueryFunctionIamRole:
+    Description: "Implicit IAM Role created for Query function"
+    Value: !GetAtt QueryFunctionRole.Arn
