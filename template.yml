@@ -77,8 +77,8 @@ Resources:
                 - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}/*
                 - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}
       Metadata:      
-      DockerContext: ./query-processor
-      Dockerfile: Dockerfile.python
+        DockerContext: ./query-processor
+        Dockerfile: Dockerfile.python
       
   ApiGatewayRestApi:
     Type: 'AWS::Serverless::Api'
