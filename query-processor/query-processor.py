@@ -1,12 +1,11 @@
-import os
 import boto3
-import tempfile
 import json
-from langchain_community.embeddings.bedrock import BedrockEmbeddings
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_aws import BedrockLLM
+from langchain import hub
 from langchain_community.vectorstores import LanceDB
 from botocore.exceptions import ClientError
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
 
 # Env vars
