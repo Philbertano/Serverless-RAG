@@ -52,10 +52,11 @@ Resources:
   QueryFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.handler
-      Runtime: python3.11
-      Timeout: 300
+      PackageType: Image
+      Timeout: 900
       MemorySize: 512
+      Architectures:
+        - x86_64
       Environment:
         Variables:
           s3BucketName: !Ref DocumentBucket
@@ -75,7 +76,10 @@ Resources:
               Resource: 
                 - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}/*
                 - !Sub arn:aws:s3:::${AWS::StackName}-${AWS::Region}-${AWS::AccountId}
-
+      Metadata:      
+      DockerContext: ./query-processor
+      Dockerfile: Dockerfile.python
+      
   ApiGatewayRestApi:
     Type: 'AWS::Serverless::Api'
     Properties:
