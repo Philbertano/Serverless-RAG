@@ -74,11 +74,21 @@ def lambda_handler(event, context):
     dir = f's3://{lance_db_src}/embeddings'
     
     try:
-        db = LanceDB(uri=dir, region=aws_region, embedding=embeddings, table_name=lance_db_table)
+        #db = LanceDB(uri=dir, region=aws_region, embedding=embeddings, table_name=lance_db_table)
+        vector_store = LanceDB(
+                            uri=dir,
+                            embedding=embeddings,
+                            table_name=lance_db_table
+                            )
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
-
-    LanceDB.from_documents(docs, embeddings)
-
+    
+    try:
+        db = vector_store.add_documents(docs)
+    except Exception as e:
+        print('Error persisting to LanceDB:', e)
+        return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
+    
+    
     return {'statusCode': 201, 'body': json.dumps({'message': 'OK'})}

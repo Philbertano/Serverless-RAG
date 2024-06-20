@@ -34,23 +34,17 @@ def format_docs(docs):
 
 def lambda_handler(event, context):
     
-    dir = f's3://{lance_db_src}/embeddings'
-    
     try:
         vector_store = LanceDB(
                             uri=dir,
                             embedding=embeddings,
                             table_name=lance_db_table
-                        )
+                            )
     except Exception as e:
         print('Error connecting to LanceDB:', e)
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
-    
-    docsearch.as_retriever(
-        search_type="similarity_score_threshold",
-        search_kwargs={'score_threshold': 0.8}
-    )
+    retriever = vector_store.as_retriever()
     
     # Create prompt
     prompt = hub.pull("rlm/rag-prompt")
