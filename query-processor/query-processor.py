@@ -34,6 +34,9 @@ def format_docs(docs):
 
 def lambda_handler(event, context):
     
+    # Get Question
+    question_received = event.get("question")
+
     dir = f's3://{lance_db_src}/embeddings'
     
     try:
@@ -47,10 +50,7 @@ def lambda_handler(event, context):
         return {'statusCode': 500, 'body': json.dumps({'message': str(e)})}
 
     
-    docsearch.as_retriever(
-        search_type="similarity_score_threshold",
-        search_kwargs={'score_threshold': 0.8}
-    )
+    retriever = vector_store.as_retriever()
     
     # Create prompt
     prompt = hub.pull("rlm/rag-prompt")
@@ -69,7 +69,7 @@ def lambda_handler(event, context):
     )
 
     # Query the RAG chain
-    response = rag_chain.invoke("List all the bedrock models available?")
+    response = rag_chain.invoke(question_received)
 
     # Print response
     print("Response: " + response)

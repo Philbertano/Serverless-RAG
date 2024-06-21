@@ -2,8 +2,13 @@ import os
 import boto3
 import tempfile
 import json
+import pathlib
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders.csv_loader import CSVLoader
+from langchain_community.document_loaders import UnstructuredHTMLLoader
+from langchain_community.document_loaders import JSONLoader
+#from langchain_community.document_loaders import AzureAIDocumentIntelligenceLoader
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.vectorstores import LanceDB
 from botocore.exceptions import ClientError
@@ -59,13 +64,33 @@ def lambda_handler(event, context):
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     object_key = event['Records'][0]['s3']['object']['key'].replace('+', ' ')
     file_path = f'/tmp/{object_key}'
+    file_type = pathlib.Path(file_path).suffix
 
     create_directory()
 
     download_object(bucket_name, object_key, file_path)
 
     try:
-        loader = PyPDFLoader(file_path)
+        if file_type == '.csv':
+            print(f'CSV loader in progress')
+            loader = CSVLoader(file_path)
+        elif file_type == '.pdf':
+            print(f'PDF loader in progress')
+            loader = PyPDFLoader(file_path)
+        elif file_type == '.html':
+            print(f'HTML loader in progress')
+            loader = UnstructuredHTMLLoader(file_path)
+        elif file_type == '.json':
+            print(f'JSON loader in progress')
+            loader = JSONLoader(file_path)
+        else:
+            raise Exception('Invalid file type uploaded')
+            
+        #endpoint = "<endpoint>"
+        #key = "<key>"
+        #loader = AzureAIDocumentIntelligenceLoader(
+        #           api_endpoint=endpoint, api_key=key, file_path=file_path, api_model="prebuilt-layout"
+        #            )
         docs = loader.load_and_split(text_splitter)
     except Exception as e:
         print('Error loading documents:', e)

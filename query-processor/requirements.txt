@@ -1,3 +1,4 @@
 langchain-community
-langchain-aws
 langchainhub
+langchain-aws
+lancedb
